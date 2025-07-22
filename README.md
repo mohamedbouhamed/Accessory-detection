@@ -1,35 +1,47 @@
-# Détection d’Accessoires sur Images de Personnes
+# Classification binaire d’images avec minimisation du Half-Total Error Rate (HTER)
 
-## 🎯 Objectif du projet
-Ce projet a pour but de développer un algorithme de vision par ordinateur capable de détecter automatiquement différents accessoires portés par des personnes sur des images (lunettes, chapeaux, sacs, etc.) grâce à des techniques d’apprentissage profond.
+## 🎯 Objectif  
+Développer un classifieur d’images binaire capable de minimiser le Half-Total Error Rate sur un dataset de 100k images d’entraînement et 20k images de validation.
 
-## 🛠️ Méthodologie
+---
 
-### 1. Exploration du jeu de données
-- Chargement d’un dataset d’images annotées.
-- Analyse de la distribution des classes (types d’accessoires).
+## 🛠️ Méthodologie détaillée
 
-### 2. Prétraitement
-- Redimensionnement des images.
-- Normalisation des pixels.
-- Encodage des labels en multi-label (One-hot).
+### Préparation des données  
+- Chargement des images depuis les dossiers `train_img` et `val_img`.  
+- Lecture des labels binaires depuis `label_train.txt`.  
+- Mise en forme des données en lots (batch) pour l’entraînement.  
+- Application de **data augmentation** (rotations, flips horizontaux, zooms) pour enrichir le jeu d’entraînement et améliorer la généralisation.
 
-### 3. Modélisation
-- Utilisation d’un modèle CNN (ResNet, MobileNet, ou personnalisé).
-- Détection multi-label (plusieurs accessoires peuvent être détectés sur une même image).
-- Fonction de perte adaptée : Binary Cross Entropy.
+### Modélisation  
+- Utilisation de **modèles CNN pré-entraînés** (notamment VGG16 et MobileNetV2) via TensorFlow/Keras.  
+- Remplacement de la tête (couche finale) du modèle par une architecture personnalisée : plusieurs couches denses avec activation ReLU, puis une couche finale sigmoïde pour la classification binaire.  
+- Compilation avec la fonction de perte **Binary Crossentropy** et métriques adaptées.
 
-### 4. Entraînement
-- Séparation des données en ensembles train / validation / test.
-- Suivi des performances via courbes de perte et d’accuracy.
-- Mise en place d’un early stopping pour éviter l’overfitting.
+### Entraînement  
+- Fine-tuning sur les données d’entraînement avec validation sur un sous-ensemble.  
+- Early stopping pour éviter le sur-apprentissage (overfitting).  
+- Suivi des courbes de perte et métriques (accuracy, précision, rappel).
 
-### 5. Évaluation
-- Calcul des métriques : F1-score, précision, rappel.
-- Visualisation d’exemples d’images bien ou mal classées.
-- Affichage des courbes d’apprentissage.
+### Ensemble learning et fusion des modèles  
+- Observation que chaque modèle a des biais différents (certains prédisaient plus de 0, d’autres plus de 1).  
+- Création d’une stratégie d’**ensemble** combinant plusieurs modèles pour améliorer la robustesse :  
+  - Intersection ou union des prédictions.  
+  - Vote majoritaire pondéré avec différents seuils.  
+- Cette approche a permis de réduire le Half-Total Error Rate en combinant les forces complémentaires des modèles.
 
-## 🚀 Améliorations possibles
-- Application de data augmentation.
-- Utilisation de modèles pré-entraînés (transfer learning).
-- Optimisation des hyperparamètres.
+---
+
+## 📂 Livrables  
+- `label_val.txt` : fichier contenant les prédictions pour les 20 000 images de validation, dans l’ordre donné.  
+- Code commenté dans le notebook `colab.ipynb`.
+
+---
+
+## Remarques  
+- Les images et les poids des modèles ne sont pas fournis, conformément aux consignes du projet.  
+- Le code est organisé et commenté pour faciliter la compréhension et la reproductibilité.
+
+---
+
+*Projet développé avec TensorFlow/Keras dans un cadre d’apprentissage supervisé et de vision par ordinateur.*
