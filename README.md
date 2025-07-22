@@ -1,27 +1,35 @@
 # Classification binaire d’images avec minimisation du Half-Total Error Rate (HTER)
 
-## 🎯 Objectif  
-Développer un classifieur d’images binaire capable de minimiser le Half-Total Error Rate sur un dataset de 100k images d’entraînement et 20k images de validation.
+## Description  
+Ce projet vise à développer un modèle de classification d’images binaire pour détecter des classes sur un jeu de données comportant 100k images d’entraînement et 20k images de validation. L’objectif principal est de minimiser le Half-Total Error Rate (HTER).
+
+Le modèle repose sur l’utilisation de réseaux de neurones convolutifs (CNN) pré-entraînés, notamment VGG16 et MobileNetV2, adaptés à notre tâche de classification binaire.
 
 ---
 
-## 🛠️ Méthodologie détaillée
+## Base de données  
+- Jeu d’entraînement : 100 000 images dans le dossier `train_img`.  
+- Jeu de validation : 20 000 images dans le dossier `val_img`.  
+- Labels : fichier `label_train.txt` contenant les labels binaires correspondant aux images d’entraînement.  
+- Les images sont nommées par numéro, correspondant à la ligne dans le fichier de labels.
 
-### Préparation des données  
-- Chargement des images depuis les dossiers `train_img` et `val_img`.  
-- Lecture des labels binaires depuis `label_train.txt`.  
-- Mise en forme des données en lots (batch) pour l’entraînement.  
-- Application de **data augmentation** (rotations, flips horizontaux, zooms) pour enrichir le jeu d’entraînement et améliorer la généralisation.
+---
+
+## Fonctionnalités principales  
+
+### Prétraitement des données  
+- Chargement et redimensionnement des images à 224×224 pixels, format adapté aux architectures pré-entraînées.  
+- Application de data augmentation (rotations, flips, zooms) pour enrichir le jeu d’entraînement et améliorer la robustesse du modèle.
 
 ### Modélisation  
-- Utilisation de **modèles CNN pré-entraînés** (notamment VGG16 et MobileNetV2) via TensorFlow/Keras.  
-- Remplacement de la tête (couche finale) du modèle par une architecture personnalisée : plusieurs couches denses avec activation ReLU, puis une couche finale sigmoïde pour la classification binaire.  
-- Compilation avec la fonction de perte **Binary Crossentropy** et métriques adaptées.
+- Utilisation de modèles CNN pré-entraînés sur ImageNet, notamment **VGG16** et **MobileNetV2**, avec suppression de la tête originale.  
+- Ajout de nouvelles couches denses personnalisées pour la classification binaire avec activation sigmoïde.  
+- Gel des couches convolutionnelles lors du fine-tuning pour conserver les connaissances pré-apprises.
 
 ### Entraînement  
-- Fine-tuning sur les données d’entraînement avec validation sur un sous-ensemble.  
-- Early stopping pour éviter le sur-apprentissage (overfitting).  
-- Suivi des courbes de perte et métriques (accuracy, précision, rappel).
+- Optimisation via la fonction de perte **Binary Crossentropy**.  
+- Early stopping pour prévenir l’overfitting.  
+- Suivi des performances par les métriques d’accuracy et loss.
 
 ### Ensemble learning et fusion des modèles  
 - Observation que chaque modèle a des biais différents (certains prédisaient plus de 0, d’autres plus de 1).  
@@ -32,16 +40,16 @@ Développer un classifieur d’images binaire capable de minimiser le Half-Total
 
 ---
 
-## 📂 Livrables  
-- `label_val.txt` : fichier contenant les prédictions pour les 20 000 images de validation, dans l’ordre donné.  
-- Code commenté dans le notebook `colab.ipynb`.
+## Livrables  
+- Fichier `label_val.txt` : prédictions des labels pour les 20 000 images de validation, dans l’ordre fourni.  
+- Code commenté et organisé dans le notebook `colab.ipynb`.
 
 ---
 
 ## Remarques  
-- Les images et les poids des modèles ne sont pas fournis, conformément aux consignes du projet.  
-- Le code est organisé et commenté pour faciliter la compréhension et la reproductibilité.
+- Les images et poids des modèles ne sont pas fournis, conformément aux consignes du projet.  
+- Le code est conçu pour être facilement lisible et réutilisable.
 
 ---
 
-*Projet développé avec TensorFlow/Keras dans un cadre d’apprentissage supervisé et de vision par ordinateur.*
+*Projet réalisé avec TensorFlow/Keras dans un cadre de vision par ordinateur et apprentissage supervisé.*
